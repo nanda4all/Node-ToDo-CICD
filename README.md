@@ -12,8 +12,6 @@ Run these commands:
 `npm install`
 
 `node app.js`
+End of content
 
-or Run by docker compose
-
-new changes done
 
