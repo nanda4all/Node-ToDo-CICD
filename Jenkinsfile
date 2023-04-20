@@ -1,30 +1,31 @@
-pipeline {
-    agent { label 'dev-agent' }
+pipeline{
+    agent {label 'dev-agent'}
     
     stages{
+        
         stage('Code'){
-            steps {
-                git url: 'https://github.com/LondheShubham153/node-todo-cicd.git', branch: 'master'
-            }
+         steps{
+             git url: 'https://github.com/nanda4all/Node-ToDo-CICD.git', branch: 'main'
+         }
         }
-        stage('Build and Test'){
-            steps {
-                sh 'docker build . -t trainwithshubham/node-todo-app-cicd:latest' 
-            }
+        stage('Build and test'){
+         steps{
+             sh 'docker build . -t premnanda/node-todo-app-cicd:latest'
+         }
         }
-        stage('Login and Push Image'){
-            steps {
-                echo 'logging in to docker hub and pushing image..'
-                withCredentials([usernamePassword(credentialsId:'dockerHub',passwordVariable:'dockerHubPassword', usernameVariable:'dockerHubUser')]) {
+        stage('Login and push image'){
+            steps{
+                echo 'Login into dockerhub and pushing image'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]){
                     sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-                    sh "docker push trainwithshubham/node-todo-app-cicd:latest"
-                }
+                    sh "docker push premnanda/node-todo-app-cicd:latest"
+                } 
             }
         }
         stage('Deploy'){
-            steps {
-                sh 'docker-compose down && docker-compose up -d'
-            }
+         steps{
+             sh 'docker-compose down && docker-compose up -d --no-deps --build web'
+         }
         }
     }
 }
